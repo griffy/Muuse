@@ -1,0 +1,5 @@
+Muuse is an audio player for Linux. Its GUI is made with PyGTK and is modeled after (classic) Winamp. Its backend for playing audio files is made possible by the Pyap library. 
+
+The goal of Pyap is to have a rich command-line interface for quick creation of playlists on-the-fly (and manipulation of audio in general), with the simplicity of Winamp.
+
+As of right now, Muuse is buggy, incomplete software. This will change.
