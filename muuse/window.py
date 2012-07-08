@@ -22,39 +22,24 @@ pygtk.require('2.0')
 import gtk
 import pango
 
-from muuselib.image import get_icon, get_icon_uri
-from muuselib.gui.listbox import ListBox
-from muuselib.gui.clientry import CLIEntry
+from muuse.gui.listbox import ListBox
+from muuse.gui.clientry import CLIEntry
+from muuse.util import to_icon_uri, get_icon
+from muuse import settings as s
 
-WIDTH = 240
-HEIGHT = 277
-
-class MuuseWindow(object):
+class Window(object):
     def __init__(self):
-        self.setup_tray_icon()
         self.setup_gui()
         self.setup_handlers()
-		
-    def setup_tray_icon(self):
-        # create a status icon that sits in the tray
-        self.status_icon = gtk.StatusIcon()
-        self.status_icon.set_from_file(get_icon_uri('muuse'))
-        self.status_icon.set_tooltip('Muuse')
-        
-        # create a menu for the status icon
-        self.menu = gtk.Menu()
-        self.menu_item_show = gtk.CheckMenuItem("Show Muuse")
-        self.menu_item_show.set_active(True)
-        self.menu_item_quit = gtk.ImageMenuItem(gtk.STOCK_QUIT)
-        self.menu.append(self.menu_item_show)
-        self.menu.append(self.menu_item_quit)
-        
+	
     def setup_gui(self):
+        self.setup_tray_icon()
+
         # create the main window
         self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
-        self.window.set_title('Muuse')
-        self.window.set_icon_from_file(get_icon_uri('muuse'))
-        self.window.set_default_size(WIDTH, HEIGHT)
+        self.window.set_title("Muuse")
+        self.window.set_icon_from_file(to_icon_uri('muuse'))
+        self.window.set_default_size(s.WIDTH, s.HEIGHT)
         
         # create the main content holder
         self.content_box = gtk.VBox(False, 0)
@@ -78,11 +63,11 @@ class MuuseWindow(object):
         self.next_btn = gtk.Button()
         self.next_btn.set_image(get_icon('next'))
         self.repeat_btn = gtk.Button()
-        self.repeat_btn.set_image(get_icon('repeatall'))
+        self.repeat_btn.set_image(get_icon('repeat_all'))
         self.shuffle_btn = gtk.Button()
-        self.shuffle_btn.set_image(get_icon('shuffleoff'))
+        self.shuffle_btn.set_image(get_icon('shuffle_off'))
         self.volume_btn = gtk.VolumeButton()
-        self.volume_btn.set_image(get_icon('volumemid'))
+        self.volume_btn.set_image(get_icon('volume_mid'))
         self.volume_btn.set_value(0.5)
         # add them to the button box
         self.button_box.pack_start(self.play_btn, True, True, 0)
@@ -100,7 +85,7 @@ class MuuseWindow(object):
         # create content holder for bottom portion of window
         self.bottom_box = gtk.VBox(False, 0)
         # create the listbox for audio to be added to
-        self.listbox = ListBox(WIDTH, HEIGHT-77, 'Library')
+        self.listbox = ListBox(s.WIDTH, max(s.HEIGHT-77, 0), "Library")
         # create notebook to hold boxes below
         self.notebook = gtk.Notebook()
         # create box to hold cli
@@ -139,10 +124,10 @@ class MuuseWindow(object):
         self.notebook.append_page(self.rem_box, None)
         self.notebook.append_page(self.sel_box, None)
         self.notebook.append_page(self.list_opts_box, None)
-        self.notebook.set_tab_label_text(self.cli_box, 'CLI')
-        self.notebook.set_tab_label_text(self.add_box, 'Add')
-        self.notebook.set_tab_label_text(self.rem_box, 'Remove')
-        self.notebook.set_tab_label_text(self.sel_box, 'Select')
+        self.notebook.set_tab_label_text(self.cli_box, "CLI")
+        self.notebook.set_tab_label_text(self.add_box, "Add")
+        self.notebook.set_tab_label_text(self.rem_box, "Remove")
+        self.notebook.set_tab_label_text(self.sel_box, "Select")
         self.notebook.set_tab_label_text(self.list_opts_box, "Playlist Opts.")
         # add everything so far to the bottom portion of the window
         self.bottom_box.pack_start(self.listbox, True, True, 0)
@@ -154,6 +139,20 @@ class MuuseWindow(object):
         
         # add the content box to the window.. we have a GUI!
         self.window.add(self.content_box)
+
+    def setup_tray_icon(self):
+        # create a status icon that sits in the tray
+        self.status_icon = gtk.StatusIcon()
+        self.status_icon.set_from_file(to_icon_uri('muuse'))
+        self.status_icon.set_tooltip("Muuse")
+        
+        # create a menu for the status icon
+        self.menu = gtk.Menu()
+        self.menu_item_show = gtk.CheckMenuItem("Show Muuse")
+        self.menu_item_show.set_active(True)
+        self.menu_item_quit = gtk.ImageMenuItem(gtk.STOCK_QUIT)
+        self.menu.append(self.menu_item_show)
+        self.menu.append(self.menu_item_quit)
         
     def setup_handlers(self):
         self.window.connect('destroy', self.on_window_close)

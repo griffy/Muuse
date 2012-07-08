@@ -17,26 +17,36 @@
 # Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 # Boston, MA 02111-1307, USA.
 
+import os
+import pygtk
+pygtk.require('2.0')
+import gtk
+
+IMAGES_PATH = os.path.join(os.path.dirname(__file__), 'images')
+
 def format_time(seconds):
     time = ''
+    # Don't show hours by default unless it's necessary
     if seconds >= 3600:
-        hours = seconds / 3600
-        seconds = seconds - (hours * 3600)
-        time = str(hours) + ':'
-
-    if seconds >= 600:
-        minutes = seconds / 60
-        seconds = seconds - (minutes * 60)
-        time += str(minutes) + ':'
-    elif seconds >= 60:
-        minutes = seconds / 60
-        seconds = seconds - (minutes * 60)
-        time += '0' + str(minutes) + ':'
-    else:
-        time += '00:'
-
-    if seconds > 9:
-        time += str(seconds)
-    else:
-        time += '0' + str(seconds)
+        time += '%(hours)02d:' % {'hours': seconds / 3600}
+    while seconds >= 3600:
+        seconds -= 3600
+    # Always show minutes and seconds
+    time += '%(minutes)02d:' % {'minutes': seconds / 60}
+    while seconds >= 60:
+        seconds -= 60
+    time += '%(seconds)02d' % {'seconds': seconds}
     return time
+
+def get_icon(name):
+    return get_image(to_icon_uri(name))
+
+def get_image(uri):
+    img = gtk.Image()
+    img.set_from_file(uri)
+    return img
+
+def to_icon_uri(name):
+    return os.path.join(IMAGES_PATH, 
+                        '%(name)s.png' % {'name': name})
+    

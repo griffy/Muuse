@@ -1,0 +1,6 @@
+#!/usr/bin/env python
+
+from muuse.main import Muuse
+
+muuse = Muuse()
+muuse.main()

@@ -39,6 +39,7 @@ class ListBox(gtk.ScrolledWindow):
         self.tree_view_column = gtk.TreeViewColumn()
         """ Of the three options:
             GROW_ONLY, AUTOSIZE, and FIXED
+            
             It makes most sense that the expected behavior, especially
             when it resides in a ScrolledWindow, would be for the column
             to have a set width which can be scrolled past if necessary
