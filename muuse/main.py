@@ -25,7 +25,8 @@ pygtk.require('2.0')
 import gtk
 
 from pyap import playlist
-from pyap.audio import extensions
+from pyap import util
+from pyap.util import extensions
 from pyap.audio import Audio
 from pyap.player import Player
 from pyap.library import Library
@@ -268,8 +269,9 @@ class Muuse(Window):
         
         filter = gtk.FileFilter()
         filter.set_name('Audio')
-        for ext in extensions.AUDIO:
-            filter.add_pattern('*.%s' % ext)
+        for ext_items in extensions['audio'].items():
+            for ext in ext_items:
+                filter.add_pattern('*.%s' % ext)
         dialog.add_filter(filter)
 
         response = dialog.run()
@@ -298,7 +300,7 @@ class Muuse(Window):
                 for root, dirs, files in os.walk(folder):
                     for file in files:
                         ext = os.path.splitext(file)[1].replace('.', '')
-                        if ext in extensions.AUDIO:
+                        if util.is_audio(ext):
                             uri = os.path.join(root, file)
                             uris.append(uri)
             audio_list = [Audio(uri) for uri in uris]
@@ -351,8 +353,9 @@ class Muuse(Window):
         
         filter = gtk.FileFilter()
         filter.set_name('Playlists')
-        for ext in extensions.PLAYLIST:
-            filter.add_pattern('*.%s' % ext)
+        for ext_items in extensions['playlist'].items():
+            for ext in ext_items:
+                filter.add_pattern('*.%s' % ext)
         dialog.add_filter(filter)
 
         response = dialog.run()
